@@ -270,13 +270,38 @@ export default function TripPlanner() {
                   const parse = (s: string) => new Date(s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim()).getTime();
                   return parse(a.date) - parse(b.date);
                 }).map((ev: any, i: number, arr: any[]) => (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 12, padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none", alignItems: "start" }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: gold, lineHeight: 1.5, paddingTop: 1 }}>
-                      {ev.date.replace(/,?\s*\d{4}/, "").replace(/\(.+\)/, "").trim()}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{ev.name}</div>
-                      {ev.location && <div style={{ fontSize: 12, color: "#aaa" }}>{ev.location}</div>}
+                  <div key={i} style={{ padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 12, alignItems: "start" }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: gold, lineHeight: 1.5, paddingTop: 1 }}>
+                        {ev.date.replace(/,?\s*\d{4}/, "").replace(/\(.+\)/, "").trim()}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{ev.name}</div>
+                        {ev.location && <div style={{ fontSize: 12, color: "#aaa", marginBottom: 6 }}>{ev.location}</div>}
+                        <a href={(() => {
+                          const toGCal = (s: string) => {
+                            const cleaned = s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim();
+                            const d = new Date(cleaned);
+                            if (isNaN(d.getTime())) return "";
+                            const pad = (n: number) => String(n).padStart(2, "0");
+                            return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+                          };
+                          const start = toGCal(ev.date);
+                          const end = start;
+                          const params = new URLSearchParams({
+                            action: "TEMPLATE",
+                            text: ev.name,
+                            dates: `${start}/${end}`,
+                            details: ev.description || "",
+                            location: ev.location || "",
+                          });
+                          return `https://calendar.google.com/calendar/render?${params.toString()}`;
+                        })()} target="_blank" rel="noopener noreferrer" style={{
+                          display: "inline-block", fontSize: 11, color: "#4285f4",
+                          textDecoration: "none", border: "1px solid #4285f4",
+                          borderRadius: 3, padding: "3px 8px", letterSpacing: "0.05em",
+                        }}>+ Google Calendar</a>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -288,10 +313,16 @@ export default function TripPlanner() {
                 {[...myAttrs].sort((a: any, b: any) => a.name.localeCompare(b.name)).map((a: any, i: number, arr: any[]) => (
                   <div key={i} style={{ padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none" }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{a.name}</div>
-                    <div style={{ fontSize: 12, color: "#888", display: "flex", gap: 12, flexWrap: "wrap" as const }}>
+                    <div style={{ fontSize: 12, color: "#888", display: "flex", gap: 12, flexWrap: "wrap" as const, marginBottom: 6 }}>
                       {a.location && <span>📍 {a.location}</span>}
                       {a.hours && <span>🕐 {a.hours}</span>}
                     </div>
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.name} ${a.location || ""}`)}`}
+                      target="_blank" rel="noopener noreferrer" style={{
+                        display: "inline-block", fontSize: 11, color: "#34a853",
+                        textDecoration: "none", border: "1px solid #34a853",
+                        borderRadius: 3, padding: "3px 8px", letterSpacing: "0.05em",
+                      }}>📍 Google Maps</a>
                   </div>
                 ))}
               </div>
