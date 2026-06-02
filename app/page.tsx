@@ -194,7 +194,7 @@ export default function TripPlanner() {
               <div style={{ marginBottom: myAttrs.length > 0 ? 16 : 0 }}>
                 <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: gold, marginBottom: 8 }}>Events</div>
                 {[...myEvents].sort((a: any, b: any) => {
-                  const parse = (s: string) => new Date(s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim());
+                  const parse = (s: string) => new Date(s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim()).getTime();
                   return parse(a.date) - parse(b.date);
                 }).map((ev: any, i: number, arr: any[]) => (
                   <div key={i} style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 12, padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none", alignItems: "start" }}>
