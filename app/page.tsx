@@ -127,7 +127,7 @@ export default function TripPlanner() {
     <div style={{ minHeight: "100vh", background: "#1a1a1a", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#555", marginBottom: 8 }}>Trip Planner</div>
-        <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 400, color: "#f7f4ef", lineHeight: 1.2 }}>Where are you<br/>thinking of going?</h1>
+        <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 400, color: "#f7f4ef", lineHeight: 1.2 }}>Are you going on<br/>an adventure?</h1>
         <p style={{ margin: "0 0 36px", fontSize: 13, color: "#555", fontStyle: "italic" }}>Enter a destination and dates to find events and attractions.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
@@ -148,9 +148,25 @@ export default function TripPlanner() {
           </div>
           <div>
             <label style={lStyle}>Interests <span style={{ color: "#444" }}>(optional)</span></label>
-            <input value={interests} onChange={e => setInterests(e.target.value)}
-              placeholder="e.g. hiking, live music, food & wine"
-              style={iStyle} onKeyDown={e => e.key === "Enter" && handleSearch()} />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
+              {["music","food","arts","sports","festivals","outdoors","indigenous","nature","history","adventure"].map(cat => {
+                const active = interests.split(",").map(s => s.trim()).filter(Boolean).includes(cat);
+                return (
+                  <button key={cat} onClick={() => {
+                    const current = interests.split(",").map(s => s.trim()).filter(Boolean);
+                    const next = active ? current.filter(c => c !== cat) : [...current, cat];
+                    setInterests(next.join(", "));
+                  }} style={{
+                    padding: "6px 14px", borderRadius: 20, border: "1px solid",
+                    borderColor: active ? gold : "#333",
+                    background: active ? gold : "transparent",
+                    color: active ? "#1a1a1a" : "#777",
+                    fontSize: 12, fontFamily: "Georgia,serif", cursor: "pointer",
+                    fontWeight: active ? 600 : 400,
+                  }}>{cat}</button>
+                );
+              })}
+            </div>
           </div>
           {error && <div style={{ color: "#e07070", fontSize: 12 }}>{error}</div>}
           <button onClick={handleSearch} disabled={!canSearch || loading} style={{
