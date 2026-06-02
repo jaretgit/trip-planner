@@ -71,6 +71,30 @@ export default function TripPlanner() {
   const [attrCat, setAttrCat]     = useState("all");
   const [selected, setSelected]   = useState(new Set<string>());
 
+  const toGCalUrl = (ev: any) => {
+  const cleaned = ev.date
+    .replace(/[–—].+/, "")
+    .replace(/\(.+\)/, "")
+    .replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "")
+    .trim();
+  const d = new Date(cleaned);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const ymd = isNaN(d.getTime())
+    ? ""
+    : `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: ev.name || "",
+    dates: ymd ? `${ymd}/${ymd}` : "",
+    details: ev.description || "",
+    location: ev.location || "",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
+
+const toMapsUrl = (a: any) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.name} ${a.location || ""}`)}`;
+
   const toggle = (key: string) => setSelected(prev => {
     const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n;
   });
@@ -278,25 +302,7 @@ export default function TripPlanner() {
                       <div>
                         <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{ev.name}</div>
                         {ev.location && <div style={{ fontSize: 12, color: "#aaa", marginBottom: 6 }}>{ev.location}</div>}
-                        <a href={(() => {
-                          const toGCal = (s: string) => {
-                            const cleaned = s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim();
-                            const d = new Date(cleaned);
-                            if (isNaN(d.getTime())) return "";
-                            const pad = (n: number) => String(n).padStart(2, "0");
-                            return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
-                          };
-                          const start = toGCal(ev.date);
-                          const end = start;
-                          const params = new URLSearchParams({
-                            action: "TEMPLATE",
-                            text: ev.name,
-                            dates: `${start}/${end}`,
-                            details: ev.description || "",
-                            location: ev.location || "",
-                          });
-                          return `https://calendar.google.com/calendar/render?${params.toString()}`;
-                        })()} target="_blank" rel="noopener noreferrer" style={{
+                        <a href={toGCalUrl(ev)} target="_blank" rel="noopener noreferrer" style={{
                           display: "inline-block", fontSize: 11, color: "#4285f4",
                           textDecoration: "none", border: "1px solid #4285f4",
                           borderRadius: 3, padding: "3px 8px", letterSpacing: "0.05em",
@@ -317,12 +323,11 @@ export default function TripPlanner() {
                       {a.location && <span>📍 {a.location}</span>}
                       {a.hours && <span>🕐 {a.hours}</span>}
                     </div>
-                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${a.name} ${a.location || ""}`)}`}
-                      target="_blank" rel="noopener noreferrer" style={{
-                        display: "inline-block", fontSize: 11, color: "#34a853",
-                        textDecoration: "none", border: "1px solid #34a853",
-                        borderRadius: 3, padding: "3px 8px", letterSpacing: "0.05em",
-                      }}>📍 Google Maps</a>
+                    <a href={toMapsUrl(a)} target="_blank" rel="noopener noreferrer" style={{
+                      display: "inline-block", fontSize: 11, color: "#34a853",
+                      textDecoration: "none", border: "1px solid #34a853",
+                      borderRadius: 3, padding: "3px 8px", letterSpacing: "0.05em",
+                    }}>📍 Google Maps</a>
                   </div>
                 ))}
               </div>
