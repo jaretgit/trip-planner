@@ -58,7 +58,7 @@ function Card({ item, keyId, isEvent, selected, onToggle }: any) {
 }
 
 export default function TripPlanner() {
-  const [screen, setScreen]       = useState("search");
+  const [screen, setScreen] = useState<"search"|"events"|"attractions"|"list">("search");
   const [destination, setDestination] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate]     = useState("");
@@ -95,7 +95,7 @@ export default function TripPlanner() {
       const json = await res.json();
       if (!json.success) throw new Error(json.error);
       setData(json.data);
-      setScreen("results");
+      setScreen("events");
     } catch (e: any) {
       setError(e.message);
     }
@@ -182,33 +182,90 @@ export default function TripPlanner() {
     </div>
   );
 
-  return (
-    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
-      <div style={{ background: "#1a1a1a", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#666", marginBottom: 4 }}>Trip Planner</div>
-          <div style={{ fontSize: 20, fontWeight: 400, color: "#f7f4ef" }}>{destination}</div>
-          <div style={{ fontSize: 12, color: "#555", marginTop: 2, fontStyle: "italic" }}>{startDate} – {endDate}</div>
-        </div>
-        <button onClick={() => setScreen("search")} style={{ background: gold, border: "none", borderRadius: 3, color: "#1a1a1a", fontSize: 11, fontFamily: "Georgia,serif", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600, padding: "8px 14px", cursor: "pointer" }}>
-          ← New Search
-        </button>
+  const navBar = (title: string, onBack: () => void, backLabel: string, onNext?: () => void, nextLabel?: string) => (
+    <div style={{ background: "#1a1a1a", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div>
+        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#666", marginBottom: 4 }}>Trip Planner</div>
+        <div style={{ fontSize: 18, fontWeight: 400, color: "#f7f4ef" }}>{destination}</div>
+        <div style={{ fontSize: 11, color: "#555", marginTop: 2, fontStyle: "italic" }}>{startDate} – {endDate}</div>
       </div>
+      <div style={{ display: "flex", flexDirection: "column" as const, alignItems: "flex-end", gap: 8 }}>
+        <div style={{ fontSize: 12, color: gold, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontWeight: 600 }}>{title}</div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={onBack} style={{ background: "transparent", border: "1px solid #333", borderRadius: 3, color: "#888", fontSize: 11, fontFamily: "Georgia,serif", padding: "6px 12px", cursor: "pointer" }}>
+            ← {backLabel}
+          </button>
+          {onNext && (
+            <button onClick={onNext} style={{ background: gold, border: "none", borderRadius: 3, color: "#1a1a1a", fontSize: 11, fontFamily: "Georgia,serif", fontWeight: 600, padding: "6px 12px", cursor: "pointer" }}>
+              {nextLabel} →
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
+  if (screen === "events") return (
+    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
+      {navBar("Events", () => setScreen("search"), "Search", () => setScreen("attractions"), "Attractions")}
       <div style={{ padding: "20px 24px" }}>
         {data?.vibeCheck && (
           <div style={{ background: "#fff", borderLeft: `3px solid ${gold}`, padding: "14px 18px", marginBottom: 20, borderRadius: "0 3px 3px 0" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: gold, marginBottom: 6 }}>Vibe Check</div>
+            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: gold, marginBottom: 6 }}>Vibe Check</div>
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.75, color: "#555", fontStyle: "italic" }}>{data.vibeCheck}</p>
           </div>
         )}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" as const, marginBottom: 14 }}>
+          {EVENT_CATS.map(c => <Pill key={c} label={c} active={eventCat === c} onClick={() => setEventCat(c)} />)}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+          {visibleEvents.length === 0
+            ? <div style={{ textAlign: "center", padding: "30px 0", color: "#bbb", fontSize: 13 }}>No events in this category.</div>
+            : visibleEvents.map((ev: any) => {
+                const i = events.indexOf(ev);
+                return <Card key={i} item={ev} keyId={`e${i}`} isEvent selected={selected} onToggle={toggle} />;
+              })
+          }
+        </div>
+      </div>
+    </div>
+  );
 
-        {myCount > 0 && (
-          <div style={{ background: "#fff", border: "1px solid #e8e4dc", borderRadius: 4, padding: "16px 18px", marginBottom: 20 }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "#1a1a1a", marginBottom: 14 }}>My List ({myCount})</div>
+  if (screen === "attractions") return (
+    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
+      {navBar("Attractions", () => setScreen("events"), "Events", () => setScreen("list"), "My List")}
+      <div style={{ padding: "20px 24px" }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" as const, marginBottom: 14 }}>
+          {ATTR_CATS.map(c => <Pill key={c} label={c} active={attrCat === c} onClick={() => setAttrCat(c)} />)}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+          {visibleAttrs.length === 0
+            ? <div style={{ textAlign: "center", padding: "30px 0", color: "#bbb", fontSize: 13 }}>No attractions in this category.</div>
+            : visibleAttrs.map((a: any) => {
+                const i = attractions.indexOf(a);
+                return <Card key={i} item={a} keyId={`a${i}`} isEvent={false} selected={selected} onToggle={toggle} />;
+              })
+          }
+        </div>
+      </div>
+    </div>
+  );
+
+  if (screen === "list") return (
+    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
+      {navBar("My List", () => setScreen("attractions"), "Attractions")}
+      <div style={{ padding: "20px 24px" }}>
+        {myCount === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#bbb" }}>
+            <div style={{ fontSize: 14, marginBottom: 8 }}>Nothing selected yet.</div>
+            <button onClick={() => setScreen("events")} style={{ background: "transparent", border: "1px solid #ddd", borderRadius: 3, color: "#aaa", fontSize: 12, fontFamily: "Georgia,serif", padding: "8px 16px", cursor: "pointer" }}>← Back to Events</button>
+          </div>
+        ) : (
+          <div style={{ background: "#fff", border: "1px solid #e8e4dc", borderRadius: 4, padding: "16px 18px" }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#1a1a1a", marginBottom: 14 }}>My List ({myCount})</div>
             {myEvents.length > 0 && (
               <div style={{ marginBottom: myAttrs.length > 0 ? 16 : 0 }}>
-                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: gold, marginBottom: 8 }}>Events</div>
+                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase" as const, color: gold, marginBottom: 8 }}>Events</div>
                 {[...myEvents].sort((a: any, b: any) => {
                   const parse = (s: string) => new Date(s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim()).getTime();
                   return parse(a.date) - parse(b.date);
@@ -227,11 +284,11 @@ export default function TripPlanner() {
             )}
             {myAttrs.length > 0 && (
               <div>
-                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: gold, marginBottom: 8 }}>Attractions</div>
+                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase" as const, color: gold, marginBottom: 8 }}>Attractions</div>
                 {[...myAttrs].sort((a: any, b: any) => a.name.localeCompare(b.name)).map((a: any, i: number, arr: any[]) => (
                   <div key={i} style={{ padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none" }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{a.name}</div>
-                    <div style={{ fontSize: 12, color: "#888", display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    <div style={{ fontSize: 12, color: "#888", display: "flex", gap: 12, flexWrap: "wrap" as const }}>
                       {a.location && <span>📍 {a.location}</span>}
                       {a.hours && <span>🕐 {a.hours}</span>}
                     </div>
@@ -241,46 +298,9 @@ export default function TripPlanner() {
             )}
           </div>
         )}
-
-        <div style={{ display: "flex", borderBottom: "2px solid #e8e4dc", marginBottom: 16 }}>
-          {tabBtn("Events", events.length, "events")}
-          {tabBtn("Attractions", attractions.length, "attractions")}
-        </div>
-
-        {tab === "events" && (
-          <>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-              {EVENT_CATS.map(c => <Pill key={c} label={c} active={eventCat === c} onClick={() => setEventCat(c)} />)}
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {visibleEvents.length === 0
-                ? <div style={{ textAlign: "center", padding: "30px 0", color: "#bbb", fontSize: 13 }}>No events in this category.</div>
-                : visibleEvents.map((ev: any) => {
-                    const i = events.indexOf(ev);
-                    return <Card key={i} item={ev} keyId={`e${i}`} isEvent selected={selected} onToggle={toggle} />;
-                  })
-              }
-            </div>
-          </>
-        )}
-
-        {tab === "attractions" && (
-          <>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-              {ATTR_CATS.map(c => <Pill key={c} label={c} active={attrCat === c} onClick={() => setAttrCat(c)} />)}
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {visibleAttrs.length === 0
-                ? <div style={{ textAlign: "center", padding: "30px 0", color: "#bbb", fontSize: 13 }}>No attractions in this category.</div>
-                : visibleAttrs.map((a: any) => {
-                    const i = attractions.indexOf(a);
-                    return <Card key={i} item={a} keyId={`a${i}`} isEvent={false} selected={selected} onToggle={toggle} />;
-                  })
-              }
-            </div>
-          </>
-        )}
       </div>
     </div>
   );
+
+  return <div />;
 }
