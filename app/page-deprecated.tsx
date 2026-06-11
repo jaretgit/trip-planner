@@ -3,15 +3,15 @@ import { useState } from "react";
 
 const EVENT_CATS = ["all","music","food","arts","sports","festivals","outdoors","indigenous"];
 const ATTR_CATS  = ["all","nature","history","food","arts","adventure","indigenous"];
-const teal = "#3d8b7a";
+const gold = "#c9a96e";
 
 function Pill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} style={{
       padding: "4px 12px", borderRadius: 20, border: "1px solid",
-      borderColor: active ? teal : "#c8e4de",
-      background: active ? teal : "transparent",
-      color: active ? "#fff" : "#7aada4",
+      borderColor: active ? "#1a1a1a" : "#ddd",
+      background: active ? "#1a1a1a" : "transparent",
+      color: active ? "#fff" : "#999",
       fontSize: 11, fontFamily: "Georgia,serif", cursor: "pointer",
     }}>{label}</button>
   );
@@ -23,13 +23,13 @@ function Card({ item, keyId, isEvent, selected, onToggle }: any) {
     <div onClick={() => onToggle(keyId)} style={{
       display: "grid", gridTemplateColumns: "28px 1fr", gap: 12,
       padding: "14px 16px", borderRadius: 4, cursor: "pointer",
-      background: sel ? "#f0faf7" : "#fff",
-      border: `1px solid ${sel ? teal + "88" : "#c8e4de"}`,
+      background: sel ? "#fffcf4" : "#fff",
+      border: `1px solid ${sel ? gold + "88" : "#e8e4dc"}`,
     }}>
       <div style={{
         width: 17, height: 17, borderRadius: 3, marginTop: 2, flexShrink: 0,
-        border: `1.5px solid ${sel ? teal : "#b8d8d2"}`,
-        background: sel ? teal : "transparent",
+        border: `1.5px solid ${sel ? gold : "#ccc"}`,
+        background: sel ? gold : "transparent",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
         {sel && <span style={{ color: "#fff", fontSize: 10, lineHeight: 1 }}>✓</span>}
@@ -38,17 +38,17 @@ function Card({ item, keyId, isEvent, selected, onToggle }: any) {
         <div style={{ fontSize: 14, fontWeight: 500, color: "#1a1a1a", marginBottom: 3 }}>
           {item.name}
           {item.anchor && (
-            <span style={{ fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: teal, border: `1px solid ${teal}66`, borderRadius: 2, padding: "1px 5px", marginLeft: 8 }}>Anchor</span>
+            <span style={{ fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: gold, border: `1px solid ${gold}66`, borderRadius: 2, padding: "1px 5px", marginLeft: 8 }}>Anchor</span>
           )}
         </div>
-        <div style={{ fontSize: 11, color: "#9abdb8", marginBottom: 6, display: "flex", gap: 10, flexWrap: "wrap" as const }}>
+        <div style={{ fontSize: 11, color: "#bbb", marginBottom: 6, display: "flex", gap: 10, flexWrap: "wrap" as const }}>
           {isEvent && item.date && <span>📅 {item.date}</span>}
           {item.location && <span>📍 {item.location}</span>}
           <span style={{ textTransform: "uppercase" as const, letterSpacing: "0.05em" }}>{item.category}</span>
         </div>
         <p style={{ margin: 0, fontSize: 12, color: "#777", lineHeight: 1.65 }}>{item.description}</p>
         {item.tip && (
-          <div style={{ marginTop: 8, borderLeft: `2px solid ${teal}55`, paddingLeft: 10, fontSize: 12, color: "#999", lineHeight: 1.5 }}>
+          <div style={{ marginTop: 8, borderLeft: `2px solid ${gold}55`, paddingLeft: 10, fontSize: 12, color: "#999", lineHeight: 1.5 }}>
             💡 {item.tip}
           </div>
         )}
@@ -110,25 +110,25 @@ export default function TripPlanner() {
   const myAttrs  = attractions.filter((_: any, i: number) => selected.has(`a${i}`));
   const myCount  = myEvents.length + myAttrs.length;
 
-  const iStyle: any = { width: "100%", height: 42, background: "#fff", border: "1px solid #b8ddd6", borderRadius: 3, color: "#1a1a1a", fontSize: 14, fontFamily: "Georgia,serif", padding: "0 14px", boxSizing: "border-box", outline: "none" };
-  const lStyle: any = { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#7aada4", marginBottom: 6, display: "block" };
+  const iStyle: any = { width: "100%", height: 42, background: "#f7f4ef", border: "1px solid #ddd", borderRadius: 3, color: "#1a1a1a", fontSize: 14, fontFamily: "Georgia,serif", padding: "0 14px", boxSizing: "border-box", outline: "none" };
+  const lStyle: any = { fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#999", marginBottom: 6, display: "block" };
 
   const tabBtn = (label: string, count: number, t: string) => (
     <button onClick={() => setTab(t)} style={{
       padding: "10px 18px", border: "none", background: "transparent",
-      borderBottom: `2px solid ${tab === t ? teal : "transparent"}`,
-      color: tab === t ? teal : "#aaa", fontSize: 12,
+      borderBottom: `2px solid ${tab === t ? "#1a1a1a" : "transparent"}`,
+      color: tab === t ? "#1a1a1a" : "#aaa", fontSize: 12,
       fontFamily: "Georgia,serif", letterSpacing: "0.08em",
       textTransform: "uppercase" as const, cursor: "pointer", marginBottom: -2,
     }}>{label} <span style={{ opacity: 0.5 }}>({count})</span></button>
   );
 
   if (screen === "search") return (
-    <div style={{ minHeight: "100vh", background: "#e8f4f0", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
+    <div style={{ minHeight: "100vh", background: "#1a1a1a", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7aada4", marginBottom: 8 }}>Trip Planner</div>
-        <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 400, color: "#2c5f52", lineHeight: 1.2 }}>Are you going on<br/>an adventure?</h1>
-        <p style={{ margin: "0 0 36px", fontSize: 13, color: "#6a9e94", fontStyle: "italic" }}>Enter a destination and dates to find events and attractions.</p>
+        <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#555", marginBottom: 8 }}>Trip Planner</div>
+        <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 400, color: "#f7f4ef", lineHeight: 1.2 }}>Are you going on<br/>an adventure?</h1>
+        <p style={{ margin: "0 0 36px", fontSize: 13, color: "#555", fontStyle: "italic" }}>Enter a destination and dates to find events and attractions.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
             <label style={lStyle}>Destination or Region</label>
@@ -147,7 +147,7 @@ export default function TripPlanner() {
             </div>
           </div>
           <div>
-            <label style={lStyle}>Interests <span style={{ color: "#9abdb8" }}>(optional)</span></label>
+            <label style={lStyle}>Interests <span style={{ color: "#444" }}>(optional)</span></label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
               {["music","food","arts","sports","festivals","outdoors","indigenous","nature","history","adventure"].map(cat => {
                 const active = interests.split(",").map(s => s.trim()).filter(Boolean).includes(cat);
@@ -158,9 +158,9 @@ export default function TripPlanner() {
                     setInterests(next.join(", "));
                   }} style={{
                     padding: "6px 14px", borderRadius: 20, border: "1px solid",
-                    borderColor: active ? teal : "#b8ddd6",
-                    background: active ? teal : "transparent",
-                    color: active ? "#fff" : "#6a9e94",
+                    borderColor: active ? gold : "#333",
+                    background: active ? gold : "transparent",
+                    color: active ? "#1a1a1a" : "#777",
                     fontSize: 12, fontFamily: "Georgia,serif", cursor: "pointer",
                     fontWeight: active ? 600 : 400,
                   }}>{cat}</button>
@@ -168,10 +168,10 @@ export default function TripPlanner() {
               })}
             </div>
           </div>
-          {error && <div style={{ color: "#c0524a", fontSize: 12 }}>{error}</div>}
+          {error && <div style={{ color: "#e07070", fontSize: 12 }}>{error}</div>}
           <button onClick={handleSearch} disabled={!canSearch || loading} style={{
-            marginTop: 8, height: 46, background: canSearch && !loading ? teal : "#b8ddd6",
-            color: "#fff", border: "none", borderRadius: 3,
+            marginTop: 8, height: 46, background: canSearch && !loading ? gold : "#2a2a2a",
+            color: canSearch && !loading ? "#1a1a1a" : "#444", border: "none", borderRadius: 3,
             fontSize: 13, fontFamily: "Georgia,serif", fontWeight: 600,
             letterSpacing: "0.08em", textTransform: "uppercase", cursor: canSearch && !loading ? "pointer" : "not-allowed",
           }}>
@@ -183,20 +183,20 @@ export default function TripPlanner() {
   );
 
   const navBar = (title: string, onBack: () => void, backLabel: string, onNext?: () => void, nextLabel?: string) => (
-    <div style={{ background: "#e8f4f0", borderBottom: "2px solid #b8ddd6", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div style={{ background: "#1a1a1a", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
       <div>
-        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#7aada4", marginBottom: 4 }}>Trip Planner</div>
-        <div style={{ fontSize: 18, fontWeight: 400, color: "#2c5f52" }}>{destination}</div>
-        <div style={{ fontSize: 11, color: "#6a9e94", marginTop: 2, fontStyle: "italic" }}>{startDate} – {endDate}</div>
+        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#666", marginBottom: 4 }}>Trip Planner</div>
+        <div style={{ fontSize: 18, fontWeight: 400, color: "#f7f4ef" }}>{destination}</div>
+        <div style={{ fontSize: 11, color: "#555", marginTop: 2, fontStyle: "italic" }}>{startDate} – {endDate}</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column" as const, alignItems: "flex-end", gap: 8 }}>
-        <div style={{ fontSize: 12, color: teal, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontWeight: 600 }}>{title}</div>
+        <div style={{ fontSize: 12, color: gold, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontWeight: 600 }}>{title}</div>
         <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={onBack} style={{ background: "transparent", border: "1px solid #b8ddd6", borderRadius: 3, color: "#6a9e94", fontSize: 11, fontFamily: "Georgia,serif", padding: "6px 12px", cursor: "pointer" }}>
+          <button onClick={onBack} style={{ background: "transparent", border: "1px solid #333", borderRadius: 3, color: "#888", fontSize: 11, fontFamily: "Georgia,serif", padding: "6px 12px", cursor: "pointer" }}>
             ← {backLabel}
           </button>
           {onNext && (
-            <button onClick={onNext} style={{ background: teal, border: "none", borderRadius: 3, color: "#fff", fontSize: 11, fontFamily: "Georgia,serif", fontWeight: 600, padding: "6px 12px", cursor: "pointer" }}>
+            <button onClick={onNext} style={{ background: gold, border: "none", borderRadius: 3, color: "#1a1a1a", fontSize: 11, fontFamily: "Georgia,serif", fontWeight: 600, padding: "6px 12px", cursor: "pointer" }}>
               {nextLabel} →
             </button>
           )}
@@ -206,12 +206,12 @@ export default function TripPlanner() {
   );
 
   if (screen === "events") return (
-    <div style={{ minHeight: "100vh", background: "#f5f8f7", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
+    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
       {navBar("Events", () => setScreen("search"), "Search", () => setScreen("attractions"), "Attractions")}
       <div style={{ padding: "20px 24px" }}>
         {data?.vibeCheck && (
-          <div style={{ background: "#fff", borderLeft: `3px solid ${teal}`, padding: "14px 18px", marginBottom: 20, borderRadius: "0 3px 3px 0" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: teal, marginBottom: 6 }}>Vibe Check</div>
+          <div style={{ background: "#fff", borderLeft: `3px solid ${gold}`, padding: "14px 18px", marginBottom: 20, borderRadius: "0 3px 3px 0" }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: gold, marginBottom: 6 }}>Vibe Check</div>
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.75, color: "#555", fontStyle: "italic" }}>{data.vibeCheck}</p>
           </div>
         )}
@@ -220,7 +220,7 @@ export default function TripPlanner() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
           {visibleEvents.length === 0
-            ? <div style={{ textAlign: "center", padding: "30px 0", color: "#9abdb8", fontSize: 13 }}>No events in this category.</div>
+            ? <div style={{ textAlign: "center", padding: "30px 0", color: "#bbb", fontSize: 13 }}>No events in this category.</div>
             : visibleEvents.map((ev: any) => {
                 const i = events.indexOf(ev);
                 return <Card key={i} item={ev} keyId={`e${i}`} isEvent selected={selected} onToggle={toggle} />;
@@ -232,7 +232,7 @@ export default function TripPlanner() {
   );
 
   if (screen === "attractions") return (
-    <div style={{ minHeight: "100vh", background: "#f5f8f7", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
+    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
       {navBar("Attractions", () => setScreen("events"), "Events", () => setScreen("list"), "My List")}
       <div style={{ padding: "20px 24px" }}>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" as const, marginBottom: 14 }}>
@@ -240,7 +240,7 @@ export default function TripPlanner() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
           {visibleAttrs.length === 0
-            ? <div style={{ textAlign: "center", padding: "30px 0", color: "#9abdb8", fontSize: 13 }}>No attractions in this category.</div>
+            ? <div style={{ textAlign: "center", padding: "30px 0", color: "#bbb", fontSize: 13 }}>No attractions in this category.</div>
             : visibleAttrs.map((a: any) => {
                 const i = attractions.indexOf(a);
                 return <Card key={i} item={a} keyId={`a${i}`} isEvent={false} selected={selected} onToggle={toggle} />;
@@ -252,31 +252,31 @@ export default function TripPlanner() {
   );
 
   if (screen === "list") return (
-    <div style={{ minHeight: "100vh", background: "#f5f8f7", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
+    <div style={{ minHeight: "100vh", background: "#f7f4ef", fontFamily: "Georgia,serif", color: "#1a1a1a" }}>
       {navBar("My List", () => setScreen("attractions"), "Attractions")}
       <div style={{ padding: "20px 24px" }}>
         {myCount === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px 0", color: "#9abdb8" }}>
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#bbb" }}>
             <div style={{ fontSize: 14, marginBottom: 8 }}>Nothing selected yet.</div>
-            <button onClick={() => setScreen("events")} style={{ background: "transparent", border: "1px solid #c8e4de", borderRadius: 3, color: "#7aada4", fontSize: 12, fontFamily: "Georgia,serif", padding: "8px 16px", cursor: "pointer" }}>← Back to Events</button>
+            <button onClick={() => setScreen("events")} style={{ background: "transparent", border: "1px solid #ddd", borderRadius: 3, color: "#aaa", fontSize: 12, fontFamily: "Georgia,serif", padding: "8px 16px", cursor: "pointer" }}>← Back to Events</button>
           </div>
         ) : (
-          <div style={{ background: "#fff", border: "1px solid #c8e4de", borderRadius: 4, padding: "16px 18px" }}>
-            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#2c5f52", marginBottom: 14 }}>My List ({myCount})</div>
+          <div style={{ background: "#fff", border: "1px solid #e8e4dc", borderRadius: 4, padding: "16px 18px" }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#1a1a1a", marginBottom: 14 }}>My List ({myCount})</div>
             {myEvents.length > 0 && (
               <div style={{ marginBottom: myAttrs.length > 0 ? 16 : 0 }}>
-                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase" as const, color: teal, marginBottom: 8 }}>Events</div>
+                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase" as const, color: gold, marginBottom: 8 }}>Events</div>
                 {[...myEvents].sort((a: any, b: any) => {
                   const parse = (s: string) => new Date(s.replace(/[–—].+/, "").replace(/\(.+\)/, "").replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*\s+/i, "").trim()).getTime();
                   return parse(a.date) - parse(b.date);
                 }).map((ev: any, i: number, arr: any[]) => (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 12, padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #ddf0ea" : "none", alignItems: "start" }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: teal, lineHeight: 1.5, paddingTop: 1 }}>
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 12, padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none", alignItems: "start" }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: gold, lineHeight: 1.5, paddingTop: 1 }}>
                       {ev.date.replace(/,?\s*\d{4}/, "").replace(/\(.+\)/, "").trim()}
                     </div>
                     <div>
                       <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{ev.name}</div>
-                      {ev.location && <div style={{ fontSize: 12, color: "#9abdb8" }}>{ev.location}</div>}
+                      {ev.location && <div style={{ fontSize: 12, color: "#aaa" }}>{ev.location}</div>}
                     </div>
                   </div>
                 ))}
@@ -284,11 +284,11 @@ export default function TripPlanner() {
             )}
             {myAttrs.length > 0 && (
               <div>
-                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase" as const, color: teal, marginBottom: 8 }}>Attractions</div>
+                <div style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase" as const, color: gold, marginBottom: 8 }}>Attractions</div>
                 {[...myAttrs].sort((a: any, b: any) => a.name.localeCompare(b.name)).map((a: any, i: number, arr: any[]) => (
-                  <div key={i} style={{ padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #ddf0ea" : "none" }}>
+                  <div key={i} style={{ padding: "9px 0", borderBottom: i < arr.length - 1 ? "1px solid #f0ece4" : "none" }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>{a.name}</div>
-                    <div style={{ fontSize: 12, color: "#7aada4", display: "flex", gap: 12, flexWrap: "wrap" as const }}>
+                    <div style={{ fontSize: 12, color: "#888", display: "flex", gap: 12, flexWrap: "wrap" as const }}>
                       {a.location && <span>📍 {a.location}</span>}
                       {a.hours && <span>🕐 {a.hours}</span>}
                     </div>
